@@ -13,7 +13,8 @@ const (
 
 func main() {
 	game := &Game{
-		lander: NewLander(),
+		lander:  NewLander(),
+		groundY: screenHeight - 50,
 	}
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("GoLander")
