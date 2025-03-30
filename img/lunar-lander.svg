@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Lunar Lander Body -->
+  <rect x="35" y="40" width="30" height="30" fill="#D1D5DB"/>
+  
+  <!-- Lunar Lander Top -->
+  <rect x="45" y="30" width="10" height="10" fill="#9CA3AF"/>
+  <rect x="47" y="25" width="6" height="5" fill="#9CA3AF"/>
+  
+  <!-- Lunar Lander Windows -->
+  <rect x="42" y="45" width="6" height="6" fill="#60A5FA"/>
+  <rect x="52" y="45" width="6" height="6" fill="#60A5FA"/>
+  
+  <!-- Landing Legs -->
+  <rect x="30" y="70" width="5" height="15" fill="#9CA3AF"/>
+  <rect x="20" y="85" width="15" height="5" fill="#9CA3AF"/>
+  
+  <rect x="65" y="70" width="5" height="15" fill="#9CA3AF"/>
+  <rect x="65" y="85" width="15" height="5" fill="#9CA3AF"/>
+  
+  <!-- Antennas -->
+  <rect x="31" y="35" width="4" height="8" fill="#9CA3AF"/>
+  <rect x="25" y="33" width="6" height="2" fill="#9CA3AF"/>
+  
+  <rect x="65" y="35" width="4" height="8" fill="#9CA3AF"/>
+  <rect x="69" y="33" width="6" height="2" fill="#9CA3AF"/>
+  
+  <!-- Thruster -->
+  <rect x="47" y="70" width="6" height="5" fill="#9CA3AF"/>
+  
+  <!-- Control panels details -->
+  <rect x="36" y="55" width="28" height="3" fill="#4B5563"/>
+  <rect x="36" y="60" width="28" height="2" fill="#4B5563"/>
+</svg>

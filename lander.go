@@ -9,7 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const landerPng = "img/mainchar.png"
+const landerPng = "img/lunar-lander.png"
 
 type Lander struct {
 	x, y   float64 // Position of the lander
