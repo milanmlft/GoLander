@@ -9,8 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const landerPng = "img/lunar-lander.png"
-
 type Lander struct {
 	x, y   float64 // Position of the lander
 	vx, vy float64 // Velocity of the lander
@@ -19,16 +17,16 @@ type Lander struct {
 	img    *ebiten.Image
 }
 
-func NewLander() Lander {
-	img, err := loadImageFromFile(landerPng)
+func NewLander(x float64, y float64, landerPngFile string) Lander {
+	img, err := loadImageFromFile(landerPngFile)
 	if err != nil {
 		log.Fatalf("failed to load image: %v", err)
 	}
 
 	landerImage := ebiten.NewImageFromImage(img)
 	return Lander{
-		x:    screenWidth / 2,
-		y:    50,
+		x:    x,
+		y:    y,
 		fuel: 100,
 		img:  landerImage,
 	}
