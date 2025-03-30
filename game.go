@@ -75,8 +75,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.lander.img, op)
 
 	// Draw the ground
-	// ebitenutil.DrawLine(screen, 0, g.groundY, screenWidth, g.groundY, color.White)
-	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 1, color.White, true)
+	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 5, color.White, true)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
