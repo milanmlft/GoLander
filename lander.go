@@ -3,10 +3,10 @@ package main
 import (
 	"image"
 	_ "image/png"
-	"log"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 type Lander struct {

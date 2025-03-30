@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -14,7 +13,7 @@ const (
 
 func main() {
 	game := &Game{
-		lander:  NewLander(screenWidth/2, screenHeight/2, landerPng),
+		lander:  NewLander(screenWidth/2, screenHeight/20, landerPng),
 		groundY: screenHeight - 50,
 	}
 	ebiten.SetWindowSize(screenWidth, screenHeight)
