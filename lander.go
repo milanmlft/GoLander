@@ -15,6 +15,8 @@ type Lander struct {
 	fuel   float64 // Amount of fuel left
 	angle  float64 // Rotation angle of the lander (degrees)
 	img    *ebiten.Image
+	sizeX  float64
+	sizeY  float64
 }
 
 func NewLander(x float64, y float64, landerPngFile string) Lander {
@@ -22,13 +24,14 @@ func NewLander(x float64, y float64, landerPngFile string) Lander {
 	if err != nil {
 		log.Fatalf("failed to load image: %v", err)
 	}
-
 	landerImage := ebiten.NewImageFromImage(img)
 	return Lander{
-		x:    x,
-		y:    y,
-		fuel: 100,
-		img:  landerImage,
+		x:     x,
+		y:     y,
+		fuel:  100,
+		img:   landerImage,
+		sizeX: float64(landerImage.Bounds().Size().X),
+		sizeY: float64(landerImage.Bounds().Size().Y),
 	}
 }
 

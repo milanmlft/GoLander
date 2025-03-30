@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	log "github.com/sirupsen/logrus"
 )
@@ -51,8 +52,7 @@ func (g *Game) Update() error {
 	g.lander.y += g.lander.vy
 
 	// Check collision with ground
-	if g.lander.y >= g.groundY-20 { // Assuming lander is ~20px tall
-		log.Info("Lander crashed!")
+	if g.lander.y >= g.groundY-20 {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
 		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
@@ -68,11 +68,10 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw the lander
-	lander_size := g.lander.img.Bounds().Size()
 	op := &ebiten.DrawImageOptions{}
 
 	// Move image center to upper-left corner
-	op.GeoM.Translate(-float64(lander_size.X)/2, -float64(lander_size.Y)/2)
+	op.GeoM.Translate(-g.lander.sizeX/2, -g.lander.sizeY/2)
 	op.GeoM.Rotate(g.lander.angle * math.Pi / 180)
 	op.GeoM.Translate(g.lander.x, g.lander.y)
 	screen.DrawImage(g.lander.img, op)
