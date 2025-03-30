@@ -38,9 +38,8 @@ func (g *Game) Update() error {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyUp) && g.lander.fuel > 0 {
-		// Apply thrust (opposite to angle)
 		rad := g.lander.angle * math.Pi / 180
-		g.lander.vx -= thrustPower * math.Sin(rad)
+		g.lander.vx -= thrustPower * -math.Sin(rad)
 		g.lander.vy -= thrustPower * math.Cos(rad)
 		g.lander.fuel -= 0.1
 	}
