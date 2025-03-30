@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	screenWidth  = 800
-	screenHeight = 600
+	screenWidth  = 1200
+	screenHeight = 800
 	landerPng    = "img/lander.png"
 )
 
