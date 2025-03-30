@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"math"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -57,6 +58,8 @@ func (g *Game) Update() error {
 		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
 			log.Info("Lander landed successfully")
 			g.success = true
+		} else {
+			log.Info("Lander crashed!")
 		}
 	}
 
@@ -76,8 +79,26 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw the ground
 	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 5, color.White, true)
+
+	ebitenutil.DebugPrintAt(screen,
+		"Fuel: "+formatFloat(g.lander.fuel, 1)+
+			"\nVelocity X: "+formatFloat(g.lander.vx, 2)+
+			"\nVelocity Y: "+formatFloat(g.lander.vy, 2),
+		10, 10)
+
+	if g.gameOver {
+		msg := "CRASHED!"
+		if g.success {
+			msg = "SUCCESSFUL LANDING!"
+		}
+		ebitenutil.DebugPrintAt(screen, msg, screenWidth/2-100, screenHeight/2)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
+}
+
+func formatFloat(f float64, decimals int) string {
+	return strconv.FormatFloat(f, 'f', decimals, 64)
 }
