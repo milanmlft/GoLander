@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -50,9 +51,11 @@ func (g *Game) Update() error {
 
 	// Check collision with ground
 	if g.lander.y >= g.groundY-20 { // Assuming lander is ~20px tall
+		log.Info("Lander crashed!")
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
 		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
+			log.Info("Lander landed successfully")
 			g.success = true
 		}
 	}
