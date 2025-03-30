@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	gravity       = 0.1 // Gravity acceleration
-	thrustPower   = 0.15
-	rotationSpeed = 2.0
+	gravity         = 0.01
+	thrustPower     = 0.05
+	fuelConsumption = 0.5
+	rotationSpeed   = 2.0
 )
 
 type Game struct {
@@ -41,7 +42,7 @@ func (g *Game) Update() error {
 		rad := g.lander.angle * math.Pi / 180
 		g.lander.vx -= thrustPower * -math.Sin(rad)
 		g.lander.vy -= thrustPower * math.Cos(rad)
-		g.lander.fuel -= 0.1
+		g.lander.fuel -= fuelConsumption
 	}
 
 	// Update position
