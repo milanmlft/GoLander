@@ -51,7 +51,18 @@ func (g *Game) Update() error {
 	g.lander.x += g.lander.vx
 	g.lander.y += g.lander.vy
 
-	// Check collision with ground
+	g.checkCollision()
+
+	return nil
+}
+
+func (g *Game) checkCollision() {
+	centerY := g.lander.y
+	width := g.lander.sizeX
+	height := g.lander.sizeY
+
+	// Assuming Lander is a rectangle
+
 	if g.lander.y >= g.groundY-20 {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
@@ -62,8 +73,6 @@ func (g *Game) Update() error {
 			log.Info("Lander crashed!")
 		}
 	}
-
-	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
