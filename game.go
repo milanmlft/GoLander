@@ -19,10 +19,12 @@ const (
 )
 
 type Game struct {
-	lander   Lander
-	groundY  float64
-	gameOver bool
-	success  bool
+	lander    Lander
+	terrain   *Terrain
+	groundY   float64
+	gameOver  bool
+	success   bool
+	obstacles []Rectangle
 }
 
 func (g *Game) Update() error {
@@ -51,31 +53,87 @@ func (g *Game) Update() error {
 	g.lander.x += g.lander.vx
 	g.lander.y += g.lander.vy
 
+	// Boundary checks
+	if g.lander.x < 0 {
+		g.lander.x = 0
+		g.lander.vx = 0
+	} else if g.lander.x > screenWidth {
+		g.lander.x = screenWidth
+		g.lander.vx = 0
+	}
+
+	if g.lander.y < 0 {
+		g.lander.y = 0
+		g.lander.vy = 0
+	}
+
+	// Update lander rectangle for collision detection
+	g.lander.UpdateRect()
+
 	g.checkCollision()
 
 	return nil
 }
 
 func (g *Game) checkCollision() {
-	centerY := g.lander.y
-	width := g.lander.sizeX
-	height := g.lander.sizeY
+	// Use the lander's rectangle for collision detection
+	landerRect := g.lander.rect
 
-	// Assuming Lander is a rectangle
-
-	if g.lander.y >= g.groundY-20 {
+	// Check collision with terrain
+	if collision, isLandingPad := g.terrain.CheckCollision(landerRect); collision {
 		g.gameOver = true
-		// Check if landing was successful (soft landing)
-		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
-			log.Info("Lander landed successfully")
+
+		// Check if landing was successful (soft landing on a landing pad)
+		if isLandingPad && math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
+			log.Info("Lander landed successfully on landing pad")
 			g.success = true
 		} else {
 			log.Info("Lander crashed!")
 		}
 	}
+
+	// Check collision with obstacles
+	for _, obstacle := range g.obstacles {
+		corners := GetRectangleCorners(landerRect)
+
+		// Create the four edges of the lander rectangle
+		landerEdges := [4]Line{
+			{corners[0], corners[1]}, // Top edge
+			{corners[1], corners[2]}, // Right edge
+			{corners[2], corners[3]}, // Bottom edge
+			{corners[3], corners[0]}, // Left edge
+		}
+
+		// Check if any edge of the lander intersects with the obstacle
+		for _, edge := range landerEdges {
+			if LineRectCollision(edge, obstacle) {
+				g.gameOver = true
+				log.Info("Lander crashed into an obstacle!")
+				return
+			}
+		}
+	}
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	// Draw the terrain
+	g.terrain.Draw(screen)
+
+	// Draw obstacles
+	for _, obstacle := range g.obstacles {
+		corners := GetRectangleCorners(obstacle)
+
+		// Draw the obstacle as a filled polygon
+		vector.StrokeLine(screen, float32(corners[0].X), float32(corners[0].Y),
+			float32(corners[1].X), float32(corners[1].Y), 2, color.RGBA{200, 100, 100, 255}, true)
+		vector.StrokeLine(screen, float32(corners[1].X), float32(corners[1].Y),
+			float32(corners[2].X), float32(corners[2].Y), 2, color.RGBA{200, 100, 100, 255}, true)
+		vector.StrokeLine(screen, float32(corners[2].X), float32(corners[2].Y),
+			float32(corners[3].X), float32(corners[3].Y), 2, color.RGBA{200, 100, 100, 255}, true)
+		vector.StrokeLine(screen, float32(corners[3].X), float32(corners[3].Y),
+			float32(corners[0].X), float32(corners[0].Y), 2, color.RGBA{200, 100, 100, 255}, true)
+	}
+
 	// Draw the lander
 	op := &ebiten.DrawImageOptions{}
 
@@ -84,9 +142,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op.GeoM.Rotate(g.lander.angle * math.Pi / 180)
 	op.GeoM.Translate(g.lander.x, g.lander.y)
 	screen.DrawImage(g.lander.img, op)
-
-	// Draw the ground
-	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 5, color.White, true)
 
 	ebitenutil.DebugPrintAt(screen,
 		"Fuel: "+formatFloat(g.lander.fuel, 1)+

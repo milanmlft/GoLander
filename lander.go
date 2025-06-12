@@ -3,6 +3,7 @@ package main
 import (
 	"image"
 	_ "image/png"
+	"math"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,6 +18,7 @@ type Lander struct {
 	img    *ebiten.Image
 	sizeX  float64
 	sizeY  float64
+	rect   Rectangle // For collision detection
 }
 
 func NewLander(x float64, y float64, landerPngFile string) Lander {
@@ -25,13 +27,22 @@ func NewLander(x float64, y float64, landerPngFile string) Lander {
 		log.Fatalf("failed to load image: %v", err)
 	}
 	landerImage := ebiten.NewImageFromImage(img)
+	sizeX := float64(landerImage.Bounds().Size().X)
+	sizeY := float64(landerImage.Bounds().Size().Y)
+
 	return Lander{
 		x:     x,
 		y:     y,
 		fuel:  100,
 		img:   landerImage,
-		sizeX: float64(landerImage.Bounds().Size().X),
-		sizeY: float64(landerImage.Bounds().Size().Y),
+		sizeX: sizeX,
+		sizeY: sizeY,
+		rect: Rectangle{
+			Center: Point{X: x, Y: y},
+			Width:  sizeX,
+			Height: sizeY,
+			Angle:  0,
+		},
 	}
 }
 
@@ -42,4 +53,14 @@ func loadImageFromFile(filepath string) (image.Image, error) {
 	}
 	img, _, err := image.Decode(f)
 	return img, err
+}
+
+// UpdateRect updates the rectangle used for collision detection
+func (l *Lander) UpdateRect() {
+	l.rect = Rectangle{
+		Center: Point{X: l.x, Y: l.y},
+		Width:  l.sizeX,
+		Height: l.sizeY,
+		Angle:  l.angle * math.Pi / 180, // Convert degrees to radians
+	}
 }
