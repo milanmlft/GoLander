@@ -1,5 +1,12 @@
 package game
 
+import (
+	"image/color"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+)
+
 // Rect represents a rotatable rectangle
 type Rect struct {
 	X      float64 // X coordinate
@@ -30,4 +37,12 @@ func (r Rect) Intersects(other Rect) bool {
 		other.X <= r.MaxX() &&
 		r.Y <= other.MaxY() &&
 		other.Y <= r.MaxY()
+}
+
+// Draw draws the rectangle to the screen, mainly for debugging
+func (r Rect) Draw(screen *ebiten.Image) {
+	vector.StrokeRect(screen,
+		float32(r.X), float32(r.Y),
+		float32(r.Width), float32(r.Height),
+		1, color.White, true)
 }

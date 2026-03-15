@@ -33,13 +33,20 @@ func NewLander(landerPngFile string) Lander {
 		log.Fatalf("failed to load image: %v", err)
 	}
 	landerImage := ebiten.NewImageFromImage(img)
+
+	bounds := landerImage.Bounds()
+	halfW := float64(bounds.Dx()) / 2
+	halfH := float64(bounds.Dy()) / 2
+
+	pos := Vector{screenWidth/2 - halfW, screenHeight/20 - halfH}
+
 	return Lander{
-		position: Vector{screenWidth / 2, screenHeight / 20},
+		position: pos,
 		fuel:     100,
 		rotation: 0,
 		sprite:   landerImage,
-		sizeX:    float64(landerImage.Bounds().Dx()),
-		sizeY:    float64(landerImage.Bounds().Dy()),
+		sizeX:    float64(bounds.Dx()),
+		sizeY:    float64(bounds.Dy()),
 	}
 }
 
@@ -81,8 +88,8 @@ func (lander *Lander) Draw(screen *ebiten.Image) {
 
 func (lander *Lander) Collider() Rect {
 	return NewRectangle(
-		lander.position.X,
-		lander.position.X,
+		lander.position.X-lander.sizeX/2,
+		lander.position.Y-lander.sizeY/2,
 		lander.sizeX,
 		lander.sizeY,
 	)

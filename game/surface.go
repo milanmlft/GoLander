@@ -20,7 +20,7 @@ type Segment struct {
 
 func NewSurface() Surface {
 	groundSegment := Segment{
-		position: Vector{0, screenHeight - 50},
+		position: Vector{0, screenHeight - 70},
 		angle:    0,
 		length:   screenWidth,
 	}
@@ -41,4 +41,22 @@ func (s *Segment) Draw(screen *ebiten.Image) {
 	x1 := x0 + float32(s.length*math.Cos(s.angle))
 	y1 := y0 + float32(s.length*math.Sin(s.angle))
 	vector.StrokeLine(screen, x0, y0, x1, y1, 5, color.White, true)
+}
+
+func (s *Surface) Intersects(other Rect) bool {
+	for _, seg := range s.segments {
+		if seg.Collider().Intersects(other) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Segment) Collider() Rect {
+	return NewRectangle(
+		s.position.X,
+		s.position.Y,
+		s.length,
+		50,
+	)
 }

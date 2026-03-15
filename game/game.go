@@ -44,8 +44,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) checkCollision() {
-	// FIXME: do proper collision check
-	if g.lander.position.Y >= screenHeight-70 {
+	if g.surface.Intersects(g.lander.Collider()) {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
 		if math.Abs(g.lander.velocity.Y) < 1.0 && math.Abs(g.lander.velocity.X) < 1.0 && math.Abs(g.lander.rotation) < 10 {
@@ -72,7 +71,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		if g.success {
 			msg = "SUCCESSFUL LANDING!"
 		}
-		ebitenutil.DebugPrintAt(screen, msg, screenWidth/2-100, screenHeight/2)
+		ebitenutil.DebugPrintAt(screen, msg, screenWidth/2, screenHeight/2)
 	}
 }
 
