@@ -19,7 +19,7 @@ const (
 
 	gravity         = 0.01
 	thrustPower     = 0.05
-	fuelConsumption = 0.5
+	fuelConsumption = 0.05
 	rotationSpeed   = 2.0
 )
 
