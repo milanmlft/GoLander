@@ -29,7 +29,7 @@ func NewGame() *Game {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("GoLander")
 	return &Game{
-		lander:  NewLander(screenWidth/2, screenHeight/20, landerPng),
+		lander:  NewLander(landerPng),
 		groundY: screenHeight - 50,
 	}
 }
@@ -48,10 +48,10 @@ func (g *Game) Update() error {
 func (g *Game) checkCollision() {
 	// Assuming Lander is a rectangle
 
-	if g.lander.y >= g.groundY-20 {
+	if g.lander.position.Y >= g.groundY-20 {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
-		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.rotation) < 10 {
+		if math.Abs(g.lander.velocity.Y) < 1.0 && math.Abs(g.lander.velocity.X) < 1.0 && math.Abs(g.lander.rotation) < 10 {
 			log.Info("Lander landed successfully")
 			g.success = true
 		} else {
@@ -68,8 +68,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	ebitenutil.DebugPrintAt(screen,
 		"Fuel: "+formatFloat(g.lander.fuel, 1)+
-			"\nVelocity X: "+formatFloat(g.lander.vx, 2)+
-			"\nVelocity Y: "+formatFloat(g.lander.vy, 2),
+			"\nVelocity X: "+formatFloat(g.lander.velocity.X, 2)+
+			"\nVelocity Y: "+formatFloat(g.lander.velocity.Y, 2),
 		10, 10)
 
 	if g.gameOver {

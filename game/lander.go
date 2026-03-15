@@ -18,8 +18,8 @@ const (
 )
 
 type Lander struct {
-	x, y     float64       // Position of the lander
-	vx, vy   float64       // Velocity of the lander
+	position Vector        // Position of the lander
+	velocity Vector        // Velocity of the lander
 	fuel     float64       // Amount of fuel left
 	rotation float64       // Rotation angle of the lander (radian)
 	sprite   *ebiten.Image // Sprite
@@ -27,15 +27,14 @@ type Lander struct {
 	sizeY    float64       // Size along Y-axis
 }
 
-func NewLander(x float64, y float64, landerPngFile string) Lander {
+func NewLander(landerPngFile string) Lander {
 	img, err := loadImageFromFile(landerPngFile)
 	if err != nil {
 		log.Fatalf("failed to load image: %v", err)
 	}
 	landerImage := ebiten.NewImageFromImage(img)
 	return Lander{
-		x:        x,
-		y:        y,
+		position: Vector{screenWidth / 2, screenHeight / 20},
 		fuel:     100,
 		rotation: 0,
 		sprite:   landerImage,
@@ -45,7 +44,7 @@ func NewLander(x float64, y float64, landerPngFile string) Lander {
 }
 
 func (lander *Lander) Update() {
-	lander.vy += gravity
+	lander.velocity.Y += gravity
 	rotationSpeed := rotationPerSecond / float64(ebiten.TPS())
 
 	// Handle controls
@@ -57,14 +56,14 @@ func (lander *Lander) Update() {
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyUp) && lander.fuel > 0 {
-		lander.vx -= thrustPower * -math.Sin(lander.rotation)
-		lander.vy -= thrustPower * math.Cos(lander.rotation)
+		lander.velocity.X -= thrustPower * -math.Sin(lander.rotation)
+		lander.velocity.Y -= thrustPower * math.Cos(lander.rotation)
 		lander.fuel -= fuelConsumption
 	}
 
 	// Update position
-	lander.x += lander.vx
-	lander.y += lander.vy
+	lander.position.X += lander.velocity.X
+	lander.position.Y += lander.velocity.Y
 }
 
 func (lander *Lander) Draw(screen *ebiten.Image) {
@@ -76,8 +75,17 @@ func (lander *Lander) Draw(screen *ebiten.Image) {
 	// Move image center to upper-left corner
 	op.GeoM.Translate(-halfW, -halfH)
 	op.GeoM.Rotate(lander.rotation)
-	op.GeoM.Translate(lander.x, lander.y)
+	op.GeoM.Translate(lander.position.X, lander.position.Y)
 	screen.DrawImage(lander.sprite, op)
+}
+
+func (lander *Lander) Collider() Rect {
+	return NewRectangle(
+		lander.position.X,
+		lander.position.X,
+		lander.sizeX,
+		lander.sizeY,
+	)
 }
 
 func loadImageFromFile(filepath string) (image.Image, error) {
