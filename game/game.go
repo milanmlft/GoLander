@@ -66,14 +66,7 @@ func (g *Game) checkCollision() {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Draw the lander
-	op := &ebiten.DrawImageOptions{}
-
-	// Move image center to upper-left corner
-	op.GeoM.Translate(-g.lander.sizeX/2, -g.lander.sizeY/2)
-	op.GeoM.Rotate(g.lander.angle * math.Pi / 180)
-	op.GeoM.Translate(g.lander.x, g.lander.y)
-	screen.DrawImage(g.lander.img, op)
+	g.lander.Draw(screen)
 
 	// Draw the ground
 	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 5, color.White, true)

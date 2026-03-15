@@ -59,6 +59,16 @@ func (lander *Lander) Update() {
 	lander.y += lander.vy
 }
 
+func (lander *Lander) Draw(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+
+	// Move image center to upper-left corner
+	op.GeoM.Translate(-lander.sizeX/2, -lander.sizeY/2)
+	op.GeoM.Rotate(lander.angle * math.Pi / 180)
+	op.GeoM.Translate(lander.x, lander.y)
+	screen.DrawImage(lander.img, op)
+}
+
 func loadImageFromFile(filepath string) (image.Image, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
