@@ -57,10 +57,6 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) checkCollision() {
-	centerY := g.lander.y
-	width := g.lander.sizeX
-	height := g.lander.sizeY
-
 	// Assuming Lander is a rectangle
 
 	if g.lander.y >= g.groundY-20 {
