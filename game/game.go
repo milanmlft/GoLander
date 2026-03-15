@@ -44,27 +44,7 @@ func (g *Game) Update() error {
 		return nil
 	}
 
-	g.lander.vy += gravity
-
-	// Handle controls
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		g.lander.angle -= rotationSpeed
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		g.lander.angle += rotationSpeed
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyUp) && g.lander.fuel > 0 {
-		rad := g.lander.angle * math.Pi / 180
-		g.lander.vx -= thrustPower * -math.Sin(rad)
-		g.lander.vy -= thrustPower * math.Cos(rad)
-		g.lander.fuel -= fuelConsumption
-	}
-
-	// Update position
-	g.lander.x += g.lander.vx
-	g.lander.y += g.lander.vy
-
+	g.lander.Update()
 	g.checkCollision()
 
 	return nil
