@@ -2,13 +2,11 @@
 package game
 
 import (
-	"image/color"
 	"math"
 	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -20,7 +18,7 @@ const (
 
 type Game struct {
 	lander   Lander
-	groundY  float64
+	surface  Surface
 	gameOver bool
 	success  bool
 }
@@ -30,7 +28,7 @@ func NewGame() *Game {
 	ebiten.SetWindowTitle("GoLander")
 	return &Game{
 		lander:  NewLander(landerPng),
-		groundY: screenHeight - 50,
+		surface: NewSurface(),
 	}
 }
 
@@ -46,9 +44,8 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) checkCollision() {
-	// Assuming Lander is a rectangle
-
-	if g.lander.position.Y >= g.groundY-20 {
+	// FIXME: do proper collision check
+	if g.lander.position.Y >= screenHeight-70 {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
 		if math.Abs(g.lander.velocity.Y) < 1.0 && math.Abs(g.lander.velocity.X) < 1.0 && math.Abs(g.lander.rotation) < 10 {
@@ -62,9 +59,7 @@ func (g *Game) checkCollision() {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.lander.Draw(screen)
-
-	// Draw the ground
-	vector.StrokeLine(screen, 0, float32(g.groundY), screenWidth, float32(g.groundY), 5, color.White, true)
+	g.surface.Draw(screen)
 
 	ebitenutil.DebugPrintAt(screen,
 		"Fuel: "+formatFloat(g.lander.fuel, 1)+
