@@ -10,14 +10,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	gravity           = 0.01
+	thrustPower       = 0.05
+	fuelConsumption   = 0.05
+	rotationPerSecond = math.Pi
+)
+
 type Lander struct {
-	x, y   float64       // Position of the lander
-	vx, vy float64       // Velocity of the lander
-	fuel   float64       // Amount of fuel left
-	angle  float64       // Rotation angle of the lander (degrees)
-	img    *ebiten.Image // Sprite
-	sizeX  float64       // Size along X-axis
-	sizeY  float64       // Size along Y-axis
+	x, y     float64       // Position of the lander
+	vx, vy   float64       // Velocity of the lander
+	fuel     float64       // Amount of fuel left
+	rotation float64       // Rotation angle of the lander (radian)
+	sprite   *ebiten.Image // Sprite
+	sizeX    float64       // Size along X-axis
+	sizeY    float64       // Size along Y-axis
 }
 
 func NewLander(x float64, y float64, landerPngFile string) Lander {
@@ -27,30 +34,31 @@ func NewLander(x float64, y float64, landerPngFile string) Lander {
 	}
 	landerImage := ebiten.NewImageFromImage(img)
 	return Lander{
-		x:     x,
-		y:     y,
-		fuel:  100,
-		img:   landerImage,
-		sizeX: float64(landerImage.Bounds().Size().X),
-		sizeY: float64(landerImage.Bounds().Size().Y),
+		x:        x,
+		y:        y,
+		fuel:     100,
+		rotation: 0,
+		sprite:   landerImage,
+		sizeX:    float64(landerImage.Bounds().Dx()),
+		sizeY:    float64(landerImage.Bounds().Dy()),
 	}
 }
 
 func (lander *Lander) Update() {
 	lander.vy += gravity
+	rotationSpeed := rotationPerSecond / float64(ebiten.TPS())
 
 	// Handle controls
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		lander.angle -= rotationSpeed
+		lander.rotation -= rotationSpeed
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		lander.angle += rotationSpeed
+		lander.rotation += rotationSpeed
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyUp) && lander.fuel > 0 {
-		rad := lander.angle * math.Pi / 180
-		lander.vx -= thrustPower * -math.Sin(rad)
-		lander.vy -= thrustPower * math.Cos(rad)
+		lander.vx -= thrustPower * -math.Sin(lander.rotation)
+		lander.vy -= thrustPower * math.Cos(lander.rotation)
 		lander.fuel -= fuelConsumption
 	}
 
@@ -60,13 +68,16 @@ func (lander *Lander) Update() {
 }
 
 func (lander *Lander) Draw(screen *ebiten.Image) {
+	halfW := lander.sizeX / 2
+	halfH := lander.sizeY / 2
+
 	op := &ebiten.DrawImageOptions{}
 
 	// Move image center to upper-left corner
-	op.GeoM.Translate(-lander.sizeX/2, -lander.sizeY/2)
-	op.GeoM.Rotate(lander.angle * math.Pi / 180)
+	op.GeoM.Translate(-halfW, -halfH)
+	op.GeoM.Rotate(lander.rotation)
 	op.GeoM.Translate(lander.x, lander.y)
-	screen.DrawImage(lander.img, op)
+	screen.DrawImage(lander.sprite, op)
 }
 
 func loadImageFromFile(filepath string) (image.Image, error) {

@@ -16,11 +16,6 @@ const (
 	screenWidth  = 1200
 	screenHeight = 800
 	landerPng    = "img/lander.png"
-
-	gravity         = 0.01
-	thrustPower     = 0.05
-	fuelConsumption = 0.05
-	rotationSpeed   = 2.0
 )
 
 type Game struct {
@@ -56,7 +51,7 @@ func (g *Game) checkCollision() {
 	if g.lander.y >= g.groundY-20 {
 		g.gameOver = true
 		// Check if landing was successful (soft landing)
-		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.angle) < 10 {
+		if math.Abs(g.lander.vy) < 1.0 && math.Abs(g.lander.vx) < 1.0 && math.Abs(g.lander.rotation) < 10 {
 			log.Info("Lander landed successfully")
 			g.success = true
 		} else {
