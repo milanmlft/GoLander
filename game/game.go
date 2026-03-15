@@ -1,4 +1,5 @@
-package main
+// Package game implements GoLander's game logic
+package game
 
 import (
 	"image/color"
@@ -12,6 +13,10 @@ import (
 )
 
 const (
+	screenWidth  = 1200
+	screenHeight = 800
+	landerPng    = "img/lander.png"
+
 	gravity         = 0.01
 	thrustPower     = 0.05
 	fuelConsumption = 0.5
@@ -23,6 +28,15 @@ type Game struct {
 	groundY  float64
 	gameOver bool
 	success  bool
+}
+
+func NewGame() *Game {
+	ebiten.SetWindowSize(screenWidth, screenHeight)
+	ebiten.SetWindowTitle("GoLander")
+	return &Game{
+		lander:  NewLander(screenWidth/2, screenHeight/20, landerPng),
+		groundY: screenHeight - 50,
+	}
 }
 
 func (g *Game) Update() error {

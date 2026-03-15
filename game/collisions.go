@@ -1,4 +1,4 @@
-package main
+package game
 
 import "math"
 
@@ -25,8 +25,8 @@ func LineRectCollision(line Line, rect Rectangle) bool {
 	return false
 }
 
-// LineIntersection calculates the intersection point of two line segments
-// Returns the intersection point and whether an intersection exists
+// LineLineIntersection calculates the intersection point of two line segments
+// and returns the intersection point and whether an intersection exists
 func LineLineIntersection(line1, line2 Line) (Point, bool) {
 	// Line 1 represented as a1x + b1y = c1
 	a1 := line1.End.Y - line1.Start.Y
